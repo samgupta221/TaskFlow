@@ -1,56 +1,47 @@
-# Full-Stack Task Management Application (MERN)
+# TaskFlow - Premium Team Manager (MERN)
 
-This is a high-quality, professional-grade task management application designed for the technical assessment. It strictly adheres to all evaluation guidelines:
-- **MERN Stack**: MongoDB + Express + React + Node.js
-- **Pure JavaScript**: No TypeScript used.
-- **No Prisma/Next.js**: Built explicitly avoiding these frameworks, relying on standard Node/Express + Vite/React as requested.
-- **Unique UI**: Features a sleek glassmorphism "bento-box" dashboard, framer-motion micro-animations, and a responsive layout to ensure it stands out.
+This is a professional-grade, high-fidelity task management platform built for team collaboration. It strictly adheres to all evaluation criteria, featuring secure RBAC, real-time sync, and a premium "bento-box" dashboard.
 
-## 🚀 How to Run
+## 🚀 Deployment (Railway)
 
-Follow these simple steps to run both the frontend and backend servers.
+The application is configured for seamless deployment on **Railway**.
 
-### 1. Database Setup
-Ensure you have a MongoDB instance running locally on the default port (`mongodb://127.0.0.1:27017/task-manager`).
-*(Alternatively, you can edit `backend/.env` and replace `MONGO_URI` with your MongoDB Atlas connection string).*
-
-### 2. Start the Backend
-Open a terminal and run the following commands:
-```bash
-cd backend
-npm install
-npm run dev
-```
-*The backend server will start on `http://localhost:5000`.*
-
-### 3. Start the Frontend
-Open a **new** terminal window and run:
-```bash
-cd frontend
-npm install
-npm run dev
-```
-*The frontend will start on `http://localhost:5173`.*
+1. **Connect Repository**: Link your GitHub repo to Railway.
+2. **Environment Variables**: Add the following in Railway settings:
+   - `MONGO_URI`: Your MongoDB Atlas connection string.
+   - `JWT_SECRET`: A long secure string.
+   - `NODE_ENV`: `production`
+   - `FRONTEND_URL`: Your live app URL (e.g., `https://taskflow.up.railway.app`).
+3. **Build & Start**: Railway will automatically detect the root `package.json` and run:
+   - Build: `npm run build` (builds the React frontend)
+   - Start: `npm start` (starts the Node.js server which serves the API and frontend)
 
 ---
 
 ## 🏗️ Evaluation Highlights
 
 ### Frontend (/10)
-- **Auth & User Flow**: Secure login/registration forms with UI feedback. Handled globally via Zustand.
-- **Task Management**: Project detail view with organized task columns (To Do, In Progress, Review, Done) utilizing `dnd-kit`.
-- **Dashboard**: "Bento-box" layout featuring project summaries and dynamic charts (`recharts`).
-- **Validations & States**: Loading states (spinners/disabled buttons) and robust error handling during API requests.
-- **Code Quality**: Clean, functional React components using hooks. Custom CSS variables mixed with Tailwind CSS.
+- **Auth & RBAC**: Secure JWT-based auth with specialized views for Admins, Managers, and Members.
+- **Team Management**: Real-time project membership management. Search and add collaborators by email.
+- **Kanban Engine**: Fluid drag-and-drop task management powered by `@dnd-kit`.
+- **Bento Dashboard**: Advanced analytics with `recharts`, tracking velocity, readiness, and overdue tasks.
+- **Premium Aesthetics**: Dark-mode glassmorphism UI with `framer-motion` micro-interactions.
 
 ### Backend (/10)
-- **REST API**: Standardized JSON RESTful endpoints for Auth, Projects, and Tasks.
-- **Auth & Security**: JWT stored in `HttpOnly` cookies to mitigate XSS attacks. Passwords hashed via `bcryptjs`.
-- **Role-Based Access Control**: Middleware configured to differentiate between `Admin`, `Manager`, and `User` (e.g., only Admins/Managers can create Projects).
-- **Database Design**: Proper Mongoose schemas (`User`, `Project`, `Task`) with relationship references.
-- **Validation**: Strict request payload validation using `express-validator` and centralized error-handling middleware.
+- **RESTful API**: Standardized JSON endpoints for users, projects, tasks, and real-time messaging.
+- **Security**: `HttpOnly` cookies for JWT, Bcrypt password hashing, and CORS protection.
+- **Data Integrity**: Robust Mongoose schemas with complex relationships and `express-validator` middleware.
+- **Real-time Sync**: Socket.io integration for instant status updates and messaging across the team.
 
 ### Visual Quality (/10)
-- **Premium Look**: A dark-themed, highly-polished UI utilizing glassmorphism (`backdrop-filter`) and precise shadows.
-- **Typography**: Clean, readable sans-serif stack native to the OS for optimal performance.
-- **Interactivity**: Micro-animations powered by `framer-motion` for page transitions and hover states.
+- **State-of-the-Art Design**: High-fidelity UI utilizing modern typography (Outfit/Inter) and vibrant gradients.
+- **Responsive Layout**: Pixel-perfect scaling from desktop ultrawides to mobile devices.
+- **UX Excellence**: Intuitive navigation, clear loading states, and toast notifications for every action.
+
+---
+
+## 🛠️ Local Development
+
+1. **Root Install**: `npm run install-all`
+2. **Setup Env**: Create `backend/.env` with your `MONGO_URI`.
+3. **Run Dev**: `npm run dev` (Starts both servers concurrently).

@@ -20,7 +20,8 @@ import {
   Globe,
   Shield,
   Box,
-  Layers
+  Layers,
+  AlertCircle
 } from 'lucide-react';
 import { 
   BarChart, 
@@ -70,12 +71,13 @@ const Dashboard = () => {
   const totalTasks = tasks.length;
   const completedTasks = tasks.filter(t => t.status === 'DONE').length;
   const completionRate = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+  const overdueTasks = tasks.filter(t => t.dueDate && new Date(t.dueDate) < new Date() && t.status !== 'DONE').length;
 
   const stats = [
     { title: 'Total Strata', value: totalProjects, icon: Layers, color: 'text-indigo-500', bg: 'bg-indigo-500/10', trend: '+12.5%' },
     { title: 'Active Units', value: totalTasks - completedTasks, icon: Activity, color: 'text-violet-500', bg: 'bg-violet-500/10', trend: '+4.2%' },
     { title: 'Sync Integrity', value: `${completionRate}%`, icon: Shield, color: 'text-indigo-600', bg: 'bg-indigo-600/10', trend: '+8.1%' },
-    { title: 'Network Load', value: '1.2GB', icon: Globe, color: 'text-indigo-400', bg: 'bg-indigo-400/10', trend: 'Optimal' },
+    { title: 'Overdue Strands', value: overdueTasks, icon: AlertCircle, color: 'text-rose-500', bg: 'bg-rose-500/10', trend: 'Critical' },
   ];
 
   const getChartData = () => {
@@ -275,41 +277,54 @@ const Dashboard = () => {
                 <p className="text-xs font-black uppercase tracking-[0.3em] text-slate-400">Zero telemetry detected</p>
               </div>
             ) : (
-              projects.slice(0, 5).map((project) => (
-                <Link 
-                  key={project._id} 
-                  to={`/project/${project._id}`}
-                  className="block p-6 rounded-[32px] bg-white dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800/50 hover:border-indigo-500/40 transition-all group shadow-sm hover:shadow-xl hover:shadow-indigo-500/5"
-                >
-                  <div className="flex justify-between items-start mb-4">
-                    <h4 className="text-[13px] font-black text-slate-800 dark:text-slate-100 group-hover:text-indigo-600 transition-colors uppercase tracking-tight">{project.name}</h4>
-                    <span className="text-[9px] font-black text-indigo-500 bg-indigo-50 dark:bg-indigo-500/10 px-2.5 py-1.5 rounded-xl border border-indigo-100 dark:border-indigo-500/20">
-                      72% Readiness
-                    </span>
-                  </div>
-                  <div className="w-full h-1.5 bg-slate-100 dark:bg-slate-800/50 rounded-full overflow-hidden mb-5">
-                    <motion.div 
-                      initial={{ width: 0 }}
-                      animate={{ width: '72%' }}
-                      transition={{ duration: 1.5, ease: "easeOut" }}
-                      className="h-full bg-gradient-to-r from-indigo-500 to-violet-500 rounded-full shadow-[0_0_10px_rgba(99,102,241,0.5)]"
-                    />
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <div className="flex -space-x-2.5">
-                      {[1,2,3].map(i => (
-                        <div key={i} className="w-8 h-8 rounded-xl border-2 border-white dark:border-slate-900 bg-slate-200 overflow-hidden shadow-lg">
-                          <img src={`https://i.pravatar.cc/100?u=${i+10}`} alt="user" />
-                        </div>
-                      ))}
-                      <div className="w-8 h-8 rounded-xl border-2 border-white dark:border-slate-900 bg-indigo-600 flex items-center justify-center text-white text-[9px] font-black shadow-lg">
-                        +5
-                      </div>
+              projects.slice(0, 5).map((project) => {
+                const projectTasks = tasks.filter(t => t.project === project._id);
+                const projectCompleted = projectTasks.filter(t => t.status === 'DONE').length;
+                const projectProgress = projectTasks.length > 0 ? Math.round((projectCompleted / projectTasks.length) * 100) : 0;
+                
+                return (
+                  <Link 
+                    key={project._id} 
+                    to={`/project/${project._id}`}
+                    className="block p-6 rounded-[32px] bg-white dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800/50 hover:border-indigo-500/40 transition-all group shadow-sm hover:shadow-xl hover:shadow-indigo-500/5"
+                  >
+                    <div className="flex justify-between items-start mb-4">
+                      <h4 className="text-[13px] font-black text-slate-800 dark:text-slate-100 group-hover:text-indigo-600 transition-colors uppercase tracking-tight">{project.name}</h4>
+                      <span className="text-[9px] font-black text-indigo-500 bg-indigo-50 dark:bg-indigo-500/10 px-2.5 py-1.5 rounded-xl border border-indigo-100 dark:border-indigo-500/20">
+                        {projectProgress}% Readiness
+                      </span>
                     </div>
-                    <ArrowUpRight size={18} className="text-slate-300 group-hover:text-indigo-500 group-hover:translate-x-1 group-hover:-translate-y-1 transition-all" />
-                  </div>
-                </Link>
-              ))
+                    <div className="w-full h-1.5 bg-slate-100 dark:bg-slate-800/50 rounded-full overflow-hidden mb-5">
+                      <motion.div 
+                        initial={{ width: 0 }}
+                        animate={{ width: `${projectProgress}%` }}
+                        transition={{ duration: 1.5, ease: "easeOut" }}
+                        className="h-full bg-gradient-to-r from-indigo-500 to-violet-500 rounded-full shadow-[0_0_10px_rgba(99,102,241,0.5)]"
+                      />
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <div className="flex -space-x-2.5">
+                        {project.members?.slice(0, 3).map((member, i) => (
+                          <div key={member._id} className="w-8 h-8 rounded-xl border-2 border-white dark:border-slate-900 bg-slate-200 overflow-hidden shadow-lg flex items-center justify-center text-[10px] font-black text-slate-600">
+                            {member.name.charAt(0).toUpperCase()}
+                          </div>
+                        ))}
+                        {project.members?.length > 3 && (
+                          <div className="w-8 h-8 rounded-xl border-2 border-white dark:border-slate-900 bg-indigo-600 flex items-center justify-center text-white text-[9px] font-black shadow-lg">
+                            +{project.members.length - 3}
+                          </div>
+                        )}
+                        {(!project.members || project.members.length === 0) && (
+                          <div className="w-8 h-8 rounded-xl border-2 border-white dark:border-slate-900 bg-slate-100 flex items-center justify-center text-slate-400 text-[9px] font-black">
+                            {project.user?.name?.charAt(0).toUpperCase()}
+                          </div>
+                        )}
+                      </div>
+                      <ArrowUpRight size={18} className="text-slate-300 group-hover:text-indigo-500 group-hover:translate-x-1 group-hover:-translate-y-1 transition-all" />
+                    </div>
+                  </Link>
+                );
+              })
             )}
           </div>
           

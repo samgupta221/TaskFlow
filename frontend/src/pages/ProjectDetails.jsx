@@ -25,7 +25,8 @@ import {
   ArrowRight,
   TrendingUp,
   AlertCircle,
-  X
+  X,
+  Trash2
 } from 'lucide-react';
 import { 
   PieChart, 
@@ -43,6 +44,7 @@ import useAuthStore from '../store/authStore.js';
 import { useDroppable } from '@dnd-kit/core';
 import toast from 'react-hot-toast';
 import TaskDetailModal from '../components/TaskDetailModal.jsx';
+import AddMemberModal from '../components/AddMemberModal.jsx';
 
 // Sortable Task Item Component
 const SortableTask = ({ id, task, onClick }) => {
@@ -158,6 +160,7 @@ const ProjectDetails = () => {
   const [newTask, setNewTask] = useState({ title: '', description: '', priority: 'MEDIUM', dueDate: '', status: 'TO DO' });
   const [selectedTask, setSelectedTask] = useState(null);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+  const [isAddMemberModalOpen, setIsAddMemberModalOpen] = useState(false);
   const { user } = useAuthStore();
   const [activeTask, setActiveTask] = useState(null);
 
@@ -311,7 +314,7 @@ const ProjectDetails = () => {
                 <div className="h-4 w-px bg-slate-200 dark:bg-slate-800"></div>
                 <div className="flex items-center gap-2 text-[11px] font-black text-slate-400 uppercase tracking-widest">
                   <Users size={14} className="text-indigo-500" />
-                  <span>12 Contributors</span>
+                  <span>{(project.members?.length || 0) + 1} Contributors</span>
                 </div>
               </div>
             </div>
@@ -319,18 +322,28 @@ const ProjectDetails = () => {
           
           <div className="flex items-center gap-4">
             <div className="flex -space-x-3 mr-4">
-              {[1,2,3,4].map(i => (
-                <div key={i} className="w-10 h-10 rounded-2xl border-4 border-slate-50 dark:border-[#020617] overflow-hidden bg-slate-200 shadow-xl">
-                  <img src={`https://i.pravatar.cc/100?u=${i+10}`} alt="team" />
+              <div className="w-10 h-10 rounded-2xl border-4 border-slate-50 dark:border-[#020617] bg-indigo-100 flex items-center justify-center text-indigo-600 text-[10px] font-black shadow-xl">
+                {project.user?.name?.charAt(0).toUpperCase()}
+              </div>
+              {project.members?.slice(0, 3).map((member, i) => (
+                <div key={member._id} className="w-10 h-10 rounded-2xl border-4 border-slate-50 dark:border-[#020617] bg-slate-200 flex items-center justify-center text-slate-600 text-[10px] font-black shadow-xl">
+                  {member.name.charAt(0).toUpperCase()}
                 </div>
               ))}
-              <div className="w-10 h-10 rounded-2xl border-4 border-slate-50 dark:border-[#020617] bg-indigo-600 flex items-center justify-center text-white text-[10px] font-black shadow-xl">
-                +8
-              </div>
+              {project.members?.length > 3 && (
+                <div className="w-10 h-10 rounded-2xl border-4 border-slate-50 dark:border-[#020617] bg-indigo-600 flex items-center justify-center text-white text-[10px] font-black shadow-xl">
+                  +{project.members.length - 3}
+                </div>
+              )}
             </div>
-            <button className="flex items-center gap-2.5 px-7 py-3.5 btn-primary rounded-[22px] text-xs font-black shadow-2xl shadow-indigo-500/30 hover:scale-105 active:scale-95 transition-all">
-              <Plus size={20} /> INVITE COLLABORATOR
-            </button>
+            {(user?.role === 'Admin' || user?.role === 'Manager') && (
+              <button 
+                onClick={() => setActiveTab('Team')}
+                className="flex items-center gap-2.5 px-7 py-3.5 btn-primary rounded-[22px] text-xs font-black shadow-2xl shadow-indigo-500/30 hover:scale-105 active:scale-95 transition-all"
+              >
+                <Plus size={20} /> MANAGE TEAM
+              </button>
+            )}
           </div>
         </div>
 
@@ -460,48 +473,79 @@ const ProjectDetails = () => {
                   </div>
                   <div className="mt-8 p-6 bg-indigo-600 rounded-[32px] text-white shadow-2xl shadow-indigo-500/20">
                     <p className="text-xs font-bold opacity-80 uppercase tracking-widest mb-1">Efficiency Target</p>
-                    <h4 className="text-3xl font-black font-outfit">Project 72% Optima</h4>
-                    <p className="text-[10px] font-medium mt-3 opacity-90 leading-relaxed">System metrics indicate 14% higher throughput compared to previous sprint cycle.</p>
+                    <h4 className="text-3xl font-black font-outfit">Project {statsData.find(s => s.name === 'Done')?.value > 0 ? Math.round((statsData.find(s => s.name === 'Done').value / tasks.length) * 100) : 0}% Optima</h4>
+                    <p className="text-[10px] font-medium mt-3 opacity-90 leading-relaxed">System metrics indicate operational readiness based on current task throughput.</p>
                   </div>
                 </div>
               </motion.div>
             )}
 
             {activeTab === 'Team' && (
-              <motion.div 
-                key="team"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 overflow-y-auto h-full pr-2"
-              >
-                {[1,2,3,4,5,6].map(i => (
-                  <div key={i} className="glass-card dark:bg-slate-900/40 p-6 rounded-[32px] border border-white/10 hover:border-indigo-500/30 transition-all group">
-                    <div className="flex items-center gap-4">
-                      <div className="relative">
-                        <img src={`https://i.pravatar.cc/100?u=${i+20}`} className="w-14 h-14 rounded-2xl shadow-lg border-2 border-white dark:border-slate-800" alt="avatar" />
-                        <span className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-4 border-white dark:border-slate-900 ${i % 3 === 0 ? 'bg-slate-300' : 'bg-emerald-500'}`}></span>
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <h4 className="text-sm font-black text-slate-800 dark:text-white truncate">Professional Contributor {i}</h4>
-                        <p className="text-[10px] font-bold text-indigo-500 uppercase tracking-widest mt-0.5">{i === 1 ? 'Lead Architect' : 'Senior Engineer'}</p>
-                      </div>
-                      <button className="text-slate-300 hover:text-indigo-600 transition-colors">
-                        <MoreHorizontal size={18} />
-                      </button>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 overflow-y-auto h-full pr-2">
+              {/* Owner Card */}
+              <div className="glass-card dark:bg-slate-900/40 p-6 rounded-[32px] border border-indigo-500/30 bg-indigo-500/5 transition-all group relative overflow-hidden">
+                <div className="absolute top-0 right-0 p-3">
+                  <span className="text-[8px] font-black bg-indigo-600 text-white px-2 py-1 rounded-lg uppercase tracking-tighter">Owner</span>
+                </div>
+                <div className="flex items-center gap-4">
+                  <div className="w-14 h-14 rounded-2xl bg-indigo-100 flex items-center justify-center text-indigo-600 font-black text-xl shadow-lg border-2 border-white dark:border-slate-800">
+                    {project.user?.name?.charAt(0).toUpperCase()}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h4 className="text-sm font-black text-slate-800 dark:text-white truncate">{project.user?.name}</h4>
+                    <p className="text-[10px] font-bold text-indigo-500 uppercase tracking-widest mt-0.5">{project.user?.role || 'Lead Architect'}</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Members Cards */}
+              {project.members?.map(member => (
+                <div key={member._id} className="glass-card dark:bg-slate-900/40 p-6 rounded-[32px] border border-white/10 hover:border-indigo-500/30 transition-all group">
+                  <div className="flex items-center gap-4">
+                    <div className="w-14 h-14 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-300 font-black text-xl shadow-lg border-2 border-white dark:border-slate-800">
+                      {member.name?.charAt(0).toUpperCase()}
                     </div>
-                    <div className="mt-6 flex items-center justify-between">
-                      <div className="text-center px-4 py-2 bg-slate-50 dark:bg-slate-800/50 rounded-2xl flex-1 mr-2">
-                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Tasks</p>
-                        <span className="text-sm font-black text-slate-800 dark:text-white">{i * 2 + 3}</span>
-                      </div>
-                      <div className="text-center px-4 py-2 bg-slate-50 dark:bg-slate-800/50 rounded-2xl flex-1 ml-2">
-                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Velocity</p>
-                        <span className="text-sm font-black text-indigo-600">{80 + i}%</span>
-                      </div>
+                    <div className="flex-1 min-w-0">
+                      <h4 className="text-sm font-black text-slate-800 dark:text-white truncate">{member.name}</h4>
+                      <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-0.5">Contributor</p>
+                    </div>
+                    {(user?.role === 'Admin' || user?.role === 'Manager') && (
+                      <button 
+                        onClick={async () => {
+                          if (window.confirm('Remove from strategy?')) {
+                            try {
+                              await api.delete(`/projects/${id}/members/${member._id}`);
+                              fetchProjectAndTasks();
+                              toast.success('Member detached');
+                            } catch (e) { toast.error('Detach failed'); }
+                          }
+                        }}
+                        className="text-slate-300 hover:text-rose-500 transition-colors"
+                      >
+                        <Trash2 size={18} />
+                      </button>
+                    )}
+                  </div>
+                  <div className="mt-6 flex items-center justify-between">
+                    <div className="text-center px-4 py-2 bg-slate-50 dark:bg-slate-800/50 rounded-2xl flex-1">
+                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Status</p>
+                      <span className="text-[11px] font-black text-indigo-500">Active</span>
                     </div>
                   </div>
-                ))}
-              </motion.div>
+                </div>
+              ))}
+
+              {/* Add Member Card */}
+              {(user?.role === 'Admin' || user?.role === 'Manager') && (
+                <div className="glass-card dark:bg-slate-900/20 p-6 rounded-[32px] border-2 border-dashed border-slate-200 dark:border-slate-800 flex flex-col items-center justify-center group hover:border-indigo-500/50 transition-all cursor-pointer min-h-[140px]"
+                  onClick={() => setIsAddMemberModalOpen(true)}>
+                  <div className="p-3 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-400 group-hover:bg-indigo-500 group-hover:text-white transition-all mb-3">
+                    <Plus size={24} />
+                  </div>
+                  <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 group-hover:text-indigo-500 transition-all">Expand Strategy Team</span>
+                </div>
+              )}
+            </div>
             )}
           </AnimatePresence>
         </div>
@@ -651,6 +695,15 @@ const ProjectDetails = () => {
           onDelete={fetchProjectAndTasks}
         />
       )}
+
+      {/* Add Member Modal */}
+      <AddMemberModal
+        isOpen={isAddMemberModalOpen}
+        onClose={() => setIsAddMemberModalOpen(false)}
+        projectId={id}
+        existingMembers={project.members}
+        onMemberAdded={fetchProjectAndTasks}
+      />
     </div>
   );
 };

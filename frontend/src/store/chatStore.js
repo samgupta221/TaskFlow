@@ -2,7 +2,9 @@ import { create } from 'zustand';
 import { io } from 'socket.io-client';
 import { api } from './authStore';
 
-const SOCKET_URL = 'http://localhost:5000';
+const SOCKET_URL = window.location.hostname === 'localhost' 
+  ? 'http://localhost:5000' 
+  : window.location.origin;
 
 const useChatStore = create((set, get) => ({
   socket: null,

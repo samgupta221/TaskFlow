@@ -16,8 +16,7 @@ import userRoutes from './routes/userRoutes.js';
 // Load env vars
 dotenv.config();
 
-// Connect to database
-connectDB();
+// connectDB is now called after server.listen
 
 const app = express();
 const server = http.createServer(app);
@@ -100,6 +99,7 @@ app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
 
-server.listen(PORT, () => {
+server.listen(PORT, '0.0.0.0', () => {
   console.log(`Server running on port ${PORT}`);
+  connectDB();
 });

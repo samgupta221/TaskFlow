@@ -9,7 +9,8 @@ import {
   ArrowRight,
   Cpu,
   Globe,
-  Code
+  Code,
+  ShieldCheck
 } from 'lucide-react';
 
 

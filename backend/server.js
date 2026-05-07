@@ -23,19 +23,19 @@ const app = express();
 const server = http.createServer(app);
 
 const allowedOrigins = process.env.NODE_ENV === 'production' 
-  ? [process.env.FRONTEND_URL] 
+  ? [process.env.FRONTEND_URL].filter(Boolean) 
   : ['http://localhost:5173', 'http://127.0.0.1:5173'];
 
 const io = new Server(server, {
   cors: {
-    origin: allowedOrigins,
+    origin: allowedOrigins.length > 0 ? allowedOrigins : true,
     credentials: true
   }
 });
 
 // Middleware
 app.use(cors({
-  origin: allowedOrigins,
+  origin: allowedOrigins.length > 0 ? allowedOrigins : true,
   credentials: true
 }));
 app.use(express.json());
@@ -47,6 +47,9 @@ app.use('/api/projects', projectRoutes);
 app.use('/api/tasks', taskRoutes);
 app.use('/api/messages', messageRoutes);
 app.use('/api/users', userRoutes);
+
+// Health check
+app.get('/health', (req, res) => res.status(200).json({ status: 'ok' }));
 
 const __dirname = path.resolve();
 

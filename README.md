@@ -1,47 +1,129 @@
-# TaskFlow - Premium Team Manager (MERN)
+TaskFlow – Full Stack Task Management System
+Overview
 
-This is a professional-grade, high-fidelity task management platform built for team collaboration. It strictly adheres to all evaluation criteria, featuring secure RBAC, real-time sync, and a premium "bento-box" dashboard.
+TaskFlow is a full-stack task management web application that allows teams to create projects, manage tasks, assign members, and track project progress efficiently. The application includes authentication, role-based access control, analytics dashboards, and real-time workflow tracking.
 
-## 🚀 Deployment (Railway)
+Features
+Authentication
+User Signup & Login
+JWT-based Authentication
+Protected Routes
+Secure Session Handling
+Dashboard
+Project Statistics
+Task Analytics
+Progress Tracking
+Productivity Charts
+Project Management
+Create, Update & Delete Projects
+Assign Team Members
+Track Project Progress
+Task Management
+Create & Assign Tasks
+Task Priorities
+Kanban Workflow
+Status Tracking:
+To Do
+In Progress
+Review
+Done
+Team Management
+Role-Based Access Control
+Admin & Member Roles
+Team Collaboration
+Reports & Analytics
+Performance Tracking
+Task Completion Analytics
+Workflow Insights
+Messaging
+Team Communication Interface
+Settings
+User Profile Management
+Account Preferences
+Tech Stack
+Frontend
+React.js
+Tailwind CSS
+Vite
+Recharts
+Lucide React
+Backend
+Node.js
+Express.js
+MongoDB Atlas
+JWT Authentication
+Mongoose
+Database
 
-The application is configured for seamless deployment on **Railway**.
+MongoDB Atlas is used for storing:
 
-1. **Connect Repository**: Link your GitHub repo to Railway.
-2. **Environment Variables**: Add the following in Railway settings:
-   - `MONGO_URI`: Your MongoDB Atlas connection string.
-   - `JWT_SECRET`: A long secure string.
-   - `NODE_ENV`: `production`
-   - `FRONTEND_URL`: Your live app URL (e.g., `https://taskflow.up.railway.app`).
-3. **Build & Start**: Railway will automatically detect the root `package.json` and run:
-   - Build: `npm run build` (builds the React frontend)
-   - Start: `npm start` (starts the Node.js server which serves the API and frontend)
+Users
+Projects
+Tasks
+Team Data
+API Features
+REST APIs
+Authentication Middleware
+Role-Based Authorization
+Input Validation
+Error Handling
+Deployment
+Frontend: Railway
+Backend: Railway
+Database: MongoDB Atlas
+Installation & Setup
+Clone Repository
+git clone <your-github-repo-link>
+cd task-management
+Backend Setup
+cd backend
+npm install
+Create .env
+NODE_ENV=development
+PORT=5000
+MONGO_URI=your_mongodb_connection_string
+JWT_SECRET=your_secret_key
+Run Backend
+npm run dev
+Frontend Setup
+cd frontend
+npm install
+npm run dev
+Folder Structure
+task-management/
+│
+├── backend/
+│   ├── config/
+│   ├── controllers/
+│   ├── middleware/
+│   ├── models/
+│   ├── routes/
+│   ├── utils/
+│   └── server.js
+│
+├── frontend/
+│   ├── src/
+│   ├── components/
+│   ├── pages/
+│   └── assets/
+│
+└── README.md
+Screens Included
+Dashboard
+Projects
+Tasks
+Team
+Reports
+Messages
+Settings
+Future Improvements
+Real-Time Notifications
+File Upload Support
+Dark/Light Theme Customization
+Mobile Optimization
+Drag & Drop Tasks
+Author
 
----
+Samridhi Gupta
 
-## 🏗️ Evaluation Highlights
-
-### Frontend (/10)
-- **Auth & RBAC**: Secure JWT-based auth with specialized views for Admins, Managers, and Members.
-- **Team Management**: Real-time project membership management. Search and add collaborators by email.
-- **Kanban Engine**: Fluid drag-and-drop task management powered by `@dnd-kit`.
-- **Bento Dashboard**: Advanced analytics with `recharts`, tracking velocity, readiness, and overdue tasks.
-- **Premium Aesthetics**: Dark-mode glassmorphism UI with `framer-motion` micro-interactions.
-
-### Backend (/10)
-- **RESTful API**: Standardized JSON endpoints for users, projects, tasks, and real-time messaging.
-- **Security**: `HttpOnly` cookies for JWT, Bcrypt password hashing, and CORS protection.
-- **Data Integrity**: Robust Mongoose schemas with complex relationships and `express-validator` middleware.
-- **Real-time Sync**: Socket.io integration for instant status updates and messaging across the team.
-
-### Visual Quality (/10)
-- **State-of-the-Art Design**: High-fidelity UI utilizing modern typography (Outfit/Inter) and vibrant gradients.
-- **Responsive Layout**: Pixel-perfect scaling from desktop ultrawides to mobile devices.
-- **UX Excellence**: Intuitive navigation, clear loading states, and toast notifications for every action.
-
----
-
-## 🛠️ Local Development
-
-1. **Root Install**: `npm run install-all`
-2. **Setup Env**: Create `backend/.env` with your `MONGO_URI`.
-3. **Run Dev**: `npm run dev` (Starts both servers concurrently).
+GitHub: GitHub Profile

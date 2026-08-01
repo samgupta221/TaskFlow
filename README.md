@@ -38,11 +38,4 @@ TaskFlow is a full-stack task management application where users can create proj
 
 ---
 
-## Deployment
-
-* Frontend: Railway
-* Backend: Railway
-* Database: MongoDB Atlas
-
----
 

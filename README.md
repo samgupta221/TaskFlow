@@ -180,5 +180,3 @@ The application supports role-based access control:
 * Project progress tracking
 
 ---
-
-for educational and portfolio purposes.

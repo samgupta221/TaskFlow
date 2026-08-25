@@ -157,13 +157,6 @@ The application supports role-based access control:
 * Monitor project progress
 * Access reports and analytics
 
-### Member
-
-* View assigned projects
-* View assigned tasks
-* Update task progress
-* Collaborate with the team
-
 ---
 
 ## 📊 Key Highlights
